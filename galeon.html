@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Galeon Payments Tracker — WeCafe LLC</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f6f3;
+    --surface: #ffffff;
+    --surface2: #f2f1ee;
+    --border: #e4e2dd;
+    --border2: #d0cdc6;
+    --text: #1a1916;
+    --text2: #6b6860;
+    --text3: #9c9a94;
+    --accent: #1a4a8a;
+    --accent-light: #e8eef7;
+    --success: #1a6b3a;
+    --success-light: #e6f4ec;
+    --danger: #8a2020;
+    --danger-light: #f7e8e8;
+    --warning: #7a5200;
+    --warning-light: #fdf3e0;
+    --info: #1a4a8a;
+    --info-light: #e8eef7;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* Header */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow);
+  }
+  .header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-icon svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .logo-text { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+  .logo-sub { font-size: 12px; color: var(--text3); font-weight: 400; }
+  .header-right { display: flex; gap: 8px; align-items: center; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    cursor: pointer; border: 1px solid transparent;
+    transition: all 0.15s ease; white-space: nowrap;
+  }
+  .btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { background: #153d74; border-color: #153d74; }
+  .btn-secondary { background: var(--surface); color: var(--text); border-color: var(--border2); }
+  .btn-secondary:hover { background: var(--surface2); border-color: var(--border2); }
+  .btn-danger { background: var(--danger-light); color: var(--danger); border-color: #f0c0c0; }
+  .btn-danger:hover { background: #f0c0c0; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+
+  /* Main layout */
+  main { max-width: 1280px; margin: 0 auto; padding: 2rem; }
+
+  /* Summary cards */
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 2rem; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 1.25rem 1.5rem;
+    box-shadow: var(--shadow);
+  }
+  .card-label { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .card-value { font-size: 26px; font-weight: 600; font-family: 'DM Mono', monospace; letter-spacing: -0.02em; color: var(--text); }
+  .card-value.success { color: var(--success); }
+  .card-value.danger { color: var(--danger); }
+  .card-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+  /* Toolbar */
+  .toolbar {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 1rem 1.25rem;
+    margin-bottom: 1rem; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    box-shadow: var(--shadow);
+  }
+  .toolbar select, .toolbar input[type="text"] {
+    font-family: 'DM Sans', sans-serif; font-size: 13px;
+    padding: 7px 11px; border: 1px solid var(--border2);
+    border-radius: var(--radius); background: var(--bg); color: var(--text);
+    outline: none; transition: border-color 0.15s;
+  }
+  .toolbar select:focus, .toolbar input[type="text"]:focus { border-color: var(--accent); }
+  .toolbar-spacer { flex: 1; }
+
+  /* Table */
+  .table-wrap {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead { background: var(--surface2); }
+  th {
+    text-align: left; font-weight: 500; font-size: 11px;
+    color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em;
+    padding: 11px 14px; border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: #fafaf8; }
+  .num { text-align: right; font-family: 'DM Mono', monospace; font-size: 12px; }
+  .ref-small { font-size: 11px; color: var(--text3); margin-top: 2px; font-family: 'DM Mono', monospace; }
+
+  /* Badges */
+  .badge {
+    display: inline-flex; align-items: center;
+    padding: 2px 8px; border-radius: 20px;
+    font-size: 11px; font-weight: 500; white-space: nowrap;
+  }
+  .badge-invoice { background: var(--info-light); color: var(--info); }
+  .badge-payment { background: var(--success-light); color: var(--success); }
+  .badge-journal { background: var(--warning-light); color: var(--warning); }
+  .badge-paid { background: var(--success-light); color: var(--success); }
+  .badge-unpaid { background: var(--danger-light); color: var(--danger); }
+
+  /* Row actions */
+  .row-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s; }
+  tbody tr:hover .row-actions { opacity: 1; }
+
+  /* Modal */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(20,18,14,0.45); z-index: 200;
+    align-items: center; justify-content: center; padding: 1rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface); border-radius: var(--radius-lg);
+    width: 100%; max-width: 580px; box-shadow: var(--shadow-lg);
+    overflow: hidden; animation: slideUp 0.2s ease;
+  }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .modal-header {
+    padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-title { font-size: 16px; font-weight: 600; }
+  .modal-close { background: none; border: none; cursor: pointer; color: var(--text3); padding: 4px; border-radius: 6px; line-height: 1; }
+  .modal-close:hover { background: var(--surface2); color: var(--text); }
+  .modal-body { padding: 1.5rem; }
+  .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-size: 12px; font-weight: 500; color: var(--text2); }
+  .form-group input, .form-group select {
+    font-family: 'DM Sans', sans-serif; font-size: 13px;
+    padding: 8px 11px; border: 1px solid var(--border2);
+    border-radius: var(--radius); background: var(--bg); color: var(--text);
+    outline: none; transition: border-color 0.15s;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--accent); background: #fff; }
+
+  /* Empty state */
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--text3); }
+  .empty svg { width: 40px; height: 40px; margin: 0 auto 1rem; opacity: 0.4; }
+
+  /* Toast */
+  #toast {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: var(--text); color: #fff;
+    padding: 10px 18px; border-radius: var(--radius);
+    font-size: 13px; font-weight: 500;
+    opacity: 0; transform: translateY(8px);
+    transition: all 0.25s; pointer-events: none; z-index: 300;
+  }
+  #toast.show { opacity: 1; transform: translateY(0); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    main { padding: 1rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    header { padding: 0 1rem; }
+    .logo-sub { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 0 1 0 10h-2"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      </div>
+      <div>
+        <div class="logo-text">Galeon Payments Tracker</div>
+        <div class="logo-sub">WeCafe LLC · Shaghaf Account</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="btn btn-secondary" onclick="exportCSV()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export CSV
+      </button>
+      <button class="btn btn-primary" onclick="openModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Entry
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="summary">
+    <div class="card">
+      <div class="card-label">Total Invoiced</div>
+      <div class="card-value" id="s-invoiced">—</div>
+      <div class="card-sub" id="s-inv-count">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Total Received</div>
+      <div class="card-value success" id="s-paid">—</div>
+      <div class="card-sub" id="s-pay-count">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Outstanding Balance</div>
+      <div class="card-value danger" id="s-balance">—</div>
+      <div class="card-sub">As per ledger</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Unpaid Invoices</div>
+      <div class="card-value danger" id="s-unpaid">—</div>
+      <div class="card-sub" id="s-unpaid-amt">—</div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <select id="f-type" onchange="renderTable()">
+      <option value="">All types</option>
+      <option value="invoice">Invoice</option>
+      <option value="payment">Payment</option>
+      <option value="journal">Journal</option>
+    </select>
+    <select id="f-status" onchange="renderTable()">
+      <option value="">All statuses</option>
+      <option value="paid">Paid</option>
+      <option value="unpaid">Unpaid</option>
+    </select>
+    <select id="f-year" onchange="renderTable()">
+      <option value="">All years</option>
+      <option value="2025">2025</option>
+      <option value="2026">2026</option>
+    </select>
+    <input type="text" id="f-search" placeholder="Search reference, job, customer ref…" oninput="renderTable()" style="min-width:240px;" />
+    <div class="toolbar-spacer"></div>
+    <span id="row-count" style="font-size:12px;color:var(--text3);"></span>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Voucher ref</th>
+          <th>Job / Customer ref</th>
+          <th>Master doc</th>
+          <th class="num">Debit (USD)</th>
+          <th class="num">Credit (USD)</th>
+          <th class="num">FC amount</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="tbl"></tbody>
+    </table>
+  </div>
+</main>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">Add Entry</span>
+      <button class="modal-close" onclick="closeModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="f-date">Date</label>
+          <input type="date" id="f-date" />
+        </div>
+        <div class="form-group">
+          <label for="f-etype">Type</label>
+          <select id="f-etype">
+            <option value="invoice">Invoice</option>
+            <option value="payment">Payment</option>
+            <option value="journal">Journal</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="f-voucher">Voucher ref</label>
+          <input type="text" id="f-voucher" placeholder="e.g. SJ/DXB/001234/2026" />
+        </div>
+        <div class="form-group">
+          <label for="f-arap">ARAP ref</label>
+          <input type="text" id="f-arap" placeholder="e.g. GAL/FI/000123/2026" />
+        </div>
+        <div class="form-group">
+          <label for="f-job">Job no.</label>
+          <input type="text" id="f-job" placeholder="e.g. GAL/BKGAFE/000123/2026" />
+        </div>
+        <div class="form-group">
+          <label for="f-custref">Customer ref</label>
+          <input type="text" id="f-custref" placeholder="e.g. GAL2500" />
+        </div>
+        <div class="form-group">
+          <label for="f-master">Master doc</label>
+          <input type="text" id="f-master" placeholder="e.g. 014-77831320" />
+        </div>
+        <div class="form-group">
+          <label for="f-status2">Status</label>
+          <select id="f-status2">
+            <option value="unpaid">Unpaid</option>
+            <option value="paid">Paid</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="f-debit">Debit (USD)</label>
+          <input type="number" id="f-debit" placeholder="0.00" step="0.01" min="0" />
+        </div>
+        <div class="form-group">
+          <label for="f-credit">Credit (USD)</label>
+          <input type="number" id="f-credit" placeholder="0.00" step="0.01" min="0" />
+        </div>
+        <div class="form-group">
+          <label for="f-fcdebit">FC debit</label>
+          <input type="number" id="f-fcdebit" placeholder="0.00" step="0.01" min="0" />
+        </div>
+        <div class="form-group">
+          <label for="f-fccredit">FC credit</label>
+          <input type="number" id="f-fccredit" placeholder="0.00" step="0.01" min="0" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEntry()">Save entry</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+let data = [
+  { id:1,  date:"2025-02-07", type:"invoice", voucher:"SJ/DXB/000828/2025", arap:"GAL/FI/000435/2025", job:"GAL/BKGAFE/000439/2025", custRef:"GAL1800", master:"014-75640795", debit:6080.25, credit:0, fcDebit:1650.00, fcCredit:0, status:"paid" },
+  { id:2,  date:"2025-02-19", type:"payment", voucher:"BRV/DXB/000287/2025", arap:"", job:"FUND RECEIVED", custRef:"3260325171ES", master:"ADCB USD", debit:0, credit:6080.25, fcDebit:0, fcCredit:1650.00, status:"paid" },
+  { id:3,  date:"2025-06-07", type:"invoice", voucher:"SJ/DXB/004193/2025", arap:"GAL/FI/002297/2025", job:"GAL/BKGAFE/002027/2025", custRef:"GAL2037", master:"205-31696276", debit:7818.65, credit:0, fcDebit:2121.75, fcCredit:0, status:"paid" },
+  { id:4,  date:"2025-06-07", type:"invoice", voucher:"SJ/DXB/004196/2025", arap:"GAL/FI/002298/2025", job:"GAL/BKGAFE/002028/2025", custRef:"GAL2038", master:"369-94743740", debit:7536.75, credit:0, fcDebit:2045.25, fcCredit:0, status:"paid" },
+  { id:5,  date:"2025-06-16", type:"invoice", voucher:"SJ/DXB/004358/2025", arap:"GAL/FI/002388/2025", job:"GAL/BKGAFE/002136/2025", custRef:"GAL2058", master:"125-14960024", debit:10985.91, credit:0, fcDebit:2981.25, fcCredit:0, status:"paid" },
+  { id:6,  date:"2025-06-20", type:"payment", voucher:"BRV/DXB/001095/2025", arap:"", job:"FUND RECEIVED", custRef:"3260325171ES", master:"USD 4,167", debit:0, credit:15355.40, fcDebit:0, fcCredit:4167.00, status:"paid" },
+  { id:7,  date:"2025-07-23", type:"journal", voucher:"GJ/DXB/004939/2025", arap:"", job:"UNCLAIMED COLLECTION", custRef:"", master:"", debit:0, credit:10985.91, fcDebit:0, fcCredit:2981.25, status:"paid" },
+  { id:8,  date:"2025-08-10", type:"invoice", voucher:"SJ/DXB/005870/2025", arap:"GAL/FI/003110/2025", job:"GAL/BKGAFC/002743/2025", custRef:"GAL2115", master:"784-40835874", debit:8307.93, credit:0, fcDebit:2262.20, fcCredit:0, status:"paid" },
+  { id:9,  date:"2025-09-08", type:"payment", voucher:"BRV/DXB/001727/2025", arap:"", job:"FUND RECEIVED", custRef:"3121615251ES", master:"USD 2,262.20", debit:0, credit:8307.93, fcDebit:0, fcCredit:2262.20, status:"paid" },
+  { id:10, date:"2025-09-10", type:"invoice", voucher:"SJ/DXB/006713/2025", arap:"GAL/FI/003470/2025", job:"GAL/BKGAFE/003040/2025", custRef:"GAL2161", master:"057-56369095", debit:4601.46, credit:0, fcDebit:1252.95, fcCredit:0, status:"paid" },
+  { id:11, date:"2025-09-14", type:"invoice", voucher:"SJ/DXB/006790/2025", arap:"GAL/FI/003493/2025", job:"GAL/BKGAFE/003072/2025", custRef:"GAL2178", master:"014-77616711", debit:17779.13, credit:0, fcDebit:4841.15, fcCredit:0, status:"paid" },
+  { id:12, date:"2025-09-30", type:"invoice", voucher:"SJ/DXB/007211/2025", arap:"GAL/FI/003684/2025", job:"GAL/BKGAFC/003248/2025", custRef:"GAL2185", master:"999-36279574", debit:4131.56, credit:0, fcDebit:1125.00, fcCredit:0, status:"unpaid" },
+  { id:13, date:"2025-10-02", type:"payment", voucher:"BRV/DXB/001856/2025", arap:"", job:"FUND RECEIVED", custRef:"4195205274ES", master:"USD 3,000", debit:0, credit:11017.50, fcDebit:0, fcCredit:3000.00, status:"paid" },
+  { id:14, date:"2025-10-16", type:"invoice", voucher:"SJ/DXB/007580/2025", arap:"GAL/FI/003849/2025", job:"GAL/BKGAFE/003399/2025", custRef:"GAL2225", master:"014-77831320", debit:5652.90, credit:0, fcDebit:1539.25, fcCredit:0, status:"unpaid" },
+  { id:15, date:"2025-10-18", type:"payment", voucher:"BRV/DXB/001971/2025", arap:"", job:"FUND RECEIVED", custRef:"3549195290ES", master:"USD 2,966.15", debit:0, credit:10893.19, fcDebit:0, fcCredit:2966.15, status:"paid" },
+  { id:16, date:"2025-11-07", type:"invoice", voucher:"SJ/DXB/008405/2025", arap:"GAL/FI/004143/2025", job:"GAL/BKGAFC/003641/2025", custRef:"GAL2185", master:"160-02435182", debit:4314.45, credit:0, fcDebit:1174.80, fcCredit:0, status:"unpaid" },
+  { id:17, date:"2025-11-25", type:"invoice", voucher:"SJ/DXB/008746/2025", arap:"GAL/FI/004264/2025", job:"GAL/BKGAFC/003792/2025", custRef:"GAL2267", master:"014-33533603", debit:19354.08, credit:0, fcDebit:5270.00, fcCredit:0, status:"paid" },
+  { id:18, date:"2025-11-26", type:"invoice", voucher:"SJ/DXB/008798/2025", arap:"GAL/FI/004283/2025", job:"GAL/BKGAFE/003813/2025", custRef:"GAL2278", master:"014-78059682", debit:4847.33, credit:0, fcDebit:1319.90, fcCredit:0, status:"unpaid" },
+  { id:19, date:"2025-12-16", type:"payment", voucher:"BRV/DXB/002549/2025", arap:"", job:"FUND RECEIVED", custRef:"CA251215022387", master:"AED 5,270.00", debit:0, credit:19354.08, fcDebit:0, fcCredit:5270.00, status:"paid" },
+  { id:20, date:"2025-12-23", type:"invoice", voucher:"SJ/DXB/009686/2025", arap:"GAL/FI/004551/2025", job:"GAL/BKGAFE/004067/2025", custRef:"GAL2310", master:"057-56905796", debit:4379.64, credit:0, fcDebit:1192.55, fcCredit:0, status:"paid" },
+  { id:21, date:"2025-12-29", type:"payment", voucher:"BRV/DXB/002547/2025", arap:"", job:"FUND RECEIVED", custRef:"3110105363ES", master:"AED 1,192.55", debit:0, credit:4379.64, fcDebit:0, fcCredit:1192.55, status:"paid" },
+  { id:22, date:"2025-12-30", type:"invoice", voucher:"SJ/DXB/009844/2025", arap:"GAL/FI/004613/2025", job:"GAL/BKGAFC/004147/2025", custRef:"GAL2328", master:"160-06436220", debit:8159.93, credit:0, fcDebit:2221.90, fcCredit:0, status:"paid" },
+  { id:23, date:"2026-02-11", type:"journal", voucher:"GJ/DXB/000747/26", arap:"", job:"SHAGHF REC – exchange adj", custRef:"", master:"", debit:21910.69, credit:21907.01, fcDebit:5966.15, fcCredit:5965.15, status:"paid" },
+  { id:24, date:"2026-02-17", type:"payment", voucher:"BRV/DXB/000339/26", arap:"", job:"FUND RECEIVED", custRef:"3269456048ES", master:"USD 2,221.90", debit:0, credit:8159.93, fcDebit:0, fcCredit:2221.90, status:"paid" },
+  { id:25, date:"2026-02-27", type:"invoice", voucher:"SJ/DXB/001980/26", arap:"GAL/FI/000491/26", job:"GAL/BKGCOURIER/000549/26", custRef:"GAL2420", master:"SHA03022026", debit:2478.94, credit:0, fcDebit:675.00, fcCredit:0, status:"paid" },
+  { id:26, date:"2026-03-31", type:"payment", voucher:"BRV/DXB/000619/26", arap:"", job:"FUND RECEIVED", custRef:"CA260326084070", master:"AED 675.00", debit:0, credit:2478.94, fcDebit:0, fcCredit:675.00, status:"paid" },
+];
+
+let nextId = 27;
+let editingId = null;
+
+function fmt(n) {
+  if (!n || n === 0) return '—';
+  return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function fmtFC(d, c) {
+  const v = d > 0 ? d : c > 0 ? c : 0;
+  if (!v) return '—';
+  return Number(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function fmtDate(d) {
+  if (!d) return '';
+  const [y, m, day] = d.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${parseInt(day)}-${months[parseInt(m)-1]}-${y}`;
+}
+
+function updateSummary() {
+  const invoices = data.filter(r => r.type === 'invoice');
+  const payments = data.filter(r => r.type === 'payment');
+  const unpaid = invoices.filter(r => r.status === 'unpaid');
+  const totalInvoiced = invoices.reduce((s, r) => s + (r.debit || 0), 0);
+  const totalPaid = payments.reduce((s, r) => s + (r.credit || 0), 0);
+  const unpaidAmt = unpaid.reduce((s, r) => s + (r.debit || 0), 0);
+
+  document.getElementById('s-invoiced').textContent = '$' + totalInvoiced.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  document.getElementById('s-inv-count').textContent = invoices.length + ' invoices total';
+  document.getElementById('s-paid').textContent = '$' + totalPaid.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  document.getElementById('s-pay-count').textContent = payments.length + ' payments received';
+  document.getElementById('s-balance').textContent = '$19,419.82';
+  document.getElementById('s-unpaid').textContent = unpaid.length;
+  document.getElementById('s-unpaid-amt').textContent = '$' + unpaidAmt.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' outstanding';
+}
+
+function renderTable() {
+  const fType = document.getElementById('f-type').value;
+  const fStatus = document.getElementById('f-status').value;
+  const fYear = document.getElementById('f-year').value;
+  const fSearch = document.getElementById('f-search').value.toLowerCase();
+
+  const filtered = data.filter(r => {
+    if (fType && r.type !== fType) return false;
+    if (fStatus && r.status !== fStatus) return false;
+    if (fYear && !r.date.startsWith(fYear)) return false;
+    if (fSearch) {
+      const haystack = (r.voucher + r.arap + r.job + r.custRef + r.master).toLowerCase();
+      if (!haystack.includes(fSearch)) return false;
+    }
+    return true;
+  });
+
+  document.getElementById('row-count').textContent = filtered.length + ' of ' + data.length + ' entries';
+
+  const tbody = document.getElementById('tbl');
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="10"><div class="empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <div>No entries match the current filters.</div>
+    </div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(r => {
+    const typeBadge = r.type === 'invoice'
+      ? '<span class="badge badge-invoice">Invoice</span>'
+      : r.type === 'payment'
+      ? '<span class="badge badge-payment">Payment</span>'
+      : '<span class="badge badge-journal">Journal</span>';
+
+    const statusBadge = r.type === 'invoice'
+      ? (r.status === 'paid' ? '<span class="badge badge-paid">Paid</span>' : '<span class="badge badge-unpaid">Unpaid</span>')
+      : '';
+
+    const arapLine = r.arap ? `<div class="ref-small">${r.arap}</div>` : '';
+    const jobLine = r.job ? `<div class="ref-small">${r.job}</div>` : '';
+
+    return `<tr>
+      <td style="white-space:nowrap;">${fmtDate(r.date)}</td>
+      <td>${typeBadge}</td>
+      <td><span style="font-family:'DM Mono',monospace;font-size:12px;">${r.voucher}</span>${arapLine}</td>
+      <td>${r.custRef || '—'}${jobLine}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text3);">${r.master || '—'}</td>
+      <td class="num">${fmt(r.debit)}</td>
+      <td class="num">${fmt(r.credit)}</td>
+      <td class="num" style="color:var(--text3);">${fmtFC(r.fcDebit, r.fcCredit)}</td>
+      <td>${statusBadge}</td>
+      <td>
+        <div class="row-actions">
+          <button class="btn btn-secondary btn-sm" onclick="editEntry(${r.id})" title="Edit">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="deleteEntry(${r.id})" title="Delete">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function openModal(id = null) {
+  editingId = id;
+  document.getElementById('modal-title').textContent = id ? 'Edit Entry' : 'Add Entry';
+  if (id) {
+    const r = data.find(x => x.id === id);
+    document.getElementById('f-date').value = r.date;
+    document.getElementById('f-etype').value = r.type;
+    document.getElementById('f-voucher').value = r.voucher;
+    document.getElementById('f-arap').value = r.arap || '';
+    document.getElementById('f-job').value = r.job || '';
+    document.getElementById('f-custref').value = r.custRef || '';
+    document.getElementById('f-master').value = r.master || '';
+    document.getElementById('f-status2').value = r.status;
+    document.getElementById('f-debit').value = r.debit || '';
+    document.getElementById('f-credit').value = r.credit || '';
+    document.getElementById('f-fcdebit').value = r.fcDebit || '';
+    document.getElementById('f-fccredit').value = r.fcCredit || '';
+  } else {
+    document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('f-etype').value = 'invoice';
+    document.getElementById('f-voucher').value = '';
+    document.getElementById('f-arap').value = '';
+    document.getElementById('f-job').value = '';
+    document.getElementById('f-custref').value = '';
+    document.getElementById('f-master').value = '';
+    document.getElementById('f-status2').value = 'unpaid';
+    document.getElementById('f-debit').value = '';
+    document.getElementById('f-credit').value = '';
+    document.getElementById('f-fcdebit').value = '';
+    document.getElementById('f-fccredit').value = '';
+  }
+  document.getElementById('modal').classList.add('open');
+}
+
+function editEntry(id) { openModal(id); }
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  editingId = null;
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal')) closeModal();
+}
+
+function saveEntry() {
+  const entry = {
+    date: document.getElementById('f-date').value,
+    type: document.getElementById('f-etype').value,
+    voucher: document.getElementById('f-voucher').value.trim(),
+    arap: document.getElementById('f-arap').value.trim(),
+    job: document.getElementById('f-job').value.trim(),
+    custRef: document.getElementById('f-custref').value.trim(),
+    master: document.getElementById('f-master').value.trim(),
+    status: document.getElementById('f-status2').value,
+    debit: parseFloat(document.getElementById('f-debit').value) || 0,
+    credit: parseFloat(document.getElementById('f-credit').value) || 0,
+    fcDebit: parseFloat(document.getElementById('f-fcdebit').value) || 0,
+    fcCredit: parseFloat(document.getElementById('f-fccredit').value) || 0,
+  };
+  if (!entry.date || !entry.voucher) {
+    showToast('Please fill in date and voucher ref.');
+    return;
+  }
+  if (editingId) {
+    const idx = data.findIndex(r => r.id === editingId);
+    data[idx] = { ...entry, id: editingId };
+    showToast('Entry updated.');
+  } else {
+    entry.id = nextId++;
+    data.push(entry);
+    showToast('Entry added.');
+  }
+  closeModal();
+  updateSummary();
+  renderTable();
+}
+
+function deleteEntry(id) {
+  if (!confirm('Delete this entry?')) return;
+  data = data.filter(r => r.id !== id);
+  updateSummary();
+  renderTable();
+  showToast('Entry deleted.');
+}
+
+function exportCSV() {
+  const headers = ['Date','Type','Voucher Ref','ARAP Ref','Job No','Customer Ref','Master Doc','Debit USD','Credit USD','FC Debit','FC Credit','Status'];
+  const rows = data.map(r => [
+    fmtDate(r.date), r.type, r.voucher, r.arap, r.job, r.custRef, r.master,
+    r.debit || '', r.credit || '', r.fcDebit || '', r.fcCredit || '', r.status
+  ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(','));
+  const csv = [headers.join(','), ...rows].join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'galeon-wecafe-payments.csv';
+  a.click();
+  showToast('CSV exported.');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+updateSummary();
+renderTable();
+</script>
+</body>
+</html>
