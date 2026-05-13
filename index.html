@@ -249,17 +249,17 @@
 <main>
   <div class="summary">
     <div class="card">
-      <div class="card-label">Total Invoiced</div>
+      <div class="card-label">Total Invoiced (AED)</div>
       <div class="card-value" id="s-invoiced">—</div>
       <div class="card-sub" id="s-inv-count">—</div>
     </div>
     <div class="card">
-      <div class="card-label">Total Received</div>
+      <div class="card-label">Total Received (AED)</div>
       <div class="card-value success" id="s-paid">—</div>
       <div class="card-sub" id="s-pay-count">—</div>
     </div>
     <div class="card">
-      <div class="card-label">Outstanding Balance</div>
+      <div class="card-label">Outstanding Balance (AED)</div>
       <div class="card-value danger" id="s-balance">—</div>
       <div class="card-sub">As per ledger</div>
     </div>
@@ -301,9 +301,9 @@
           <th>Voucher ref</th>
           <th>Job / Customer ref</th>
           <th>Master doc</th>
-          <th class="num">Debit (USD)</th>
-          <th class="num">Credit (USD)</th>
-          <th class="num">FC amount</th>
+          <th class="num">Debit (AED)</th>
+          <th class="num">Credit (AED)</th>
+          <th class="num">FC amount (USD)</th>
           <th>Status</th>
           <th></th>
         </tr>
@@ -364,19 +364,19 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="f-debit">Debit (USD)</label>
+          <label for="f-debit">Debit (AED)</label>
           <input type="number" id="f-debit" placeholder="0.00" step="0.01" min="0" />
         </div>
         <div class="form-group">
-          <label for="f-credit">Credit (USD)</label>
+          <label for="f-credit">Credit (AED)</label>
           <input type="number" id="f-credit" placeholder="0.00" step="0.01" min="0" />
         </div>
         <div class="form-group">
-          <label for="f-fcdebit">FC debit</label>
+          <label for="f-fcdebit">FC debit (USD)</label>
           <input type="number" id="f-fcdebit" placeholder="0.00" step="0.01" min="0" />
         </div>
         <div class="form-group">
-          <label for="f-fccredit">FC credit</label>
+          <label for="f-fccredit">FC credit (USD)</label>
           <input type="number" id="f-fccredit" placeholder="0.00" step="0.01" min="0" />
         </div>
       </div>
@@ -425,12 +425,12 @@ let editingId = null;
 
 function fmt(n) {
   if (!n || n === 0) return '—';
-  return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return 'AED ' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 function fmtFC(d, c) {
   const v = d > 0 ? d : c > 0 ? c : 0;
   if (!v) return '—';
-  return Number(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return '$' + Number(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 function fmtDate(d) {
   if (!d) return '';
@@ -447,13 +447,13 @@ function updateSummary() {
   const totalPaid = payments.reduce((s, r) => s + (r.credit || 0), 0);
   const unpaidAmt = unpaid.reduce((s, r) => s + (r.debit || 0), 0);
 
-  document.getElementById('s-invoiced').textContent = '$' + totalInvoiced.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  document.getElementById('s-invoiced').textContent = 'AED ' + totalInvoiced.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   document.getElementById('s-inv-count').textContent = invoices.length + ' invoices total';
-  document.getElementById('s-paid').textContent = '$' + totalPaid.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  document.getElementById('s-paid').textContent = 'AED ' + totalPaid.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   document.getElementById('s-pay-count').textContent = payments.length + ' payments received';
-  document.getElementById('s-balance').textContent = '$19,419.82';
+  document.getElementById('s-balance').textContent = 'AED 19,419.82';
   document.getElementById('s-unpaid').textContent = unpaid.length;
-  document.getElementById('s-unpaid-amt').textContent = '$' + unpaidAmt.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' outstanding';
+  document.getElementById('s-unpaid-amt').textContent = 'AED ' + unpaidAmt.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' outstanding';
 }
 
 function renderTable() {
@@ -609,7 +609,7 @@ function deleteEntry(id) {
 }
 
 function exportCSV() {
-  const headers = ['Date','Type','Voucher Ref','ARAP Ref','Job No','Customer Ref','Master Doc','Debit USD','Credit USD','FC Debit','FC Credit','Status'];
+  const headers = ['Date','Type','Voucher Ref','ARAP Ref','Job No','Customer Ref','Master Doc','Debit AED','Credit AED','FC Debit USD','FC Credit USD','Status'];
   const rows = data.map(r => [
     fmtDate(r.date), r.type, r.voucher, r.arap, r.job, r.custRef, r.master,
     r.debit || '', r.credit || '', r.fcDebit || '', r.fcCredit || '', r.status
